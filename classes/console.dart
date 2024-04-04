@@ -72,8 +72,8 @@ class ConsoleUI extends Board implements Messege, PromptServer, PromptStrategy, 
         
       
         if(((x > 0) & (x < 16)) & ((y > 0) & (y < 16))){
-          while(isValid){
-            if(board.cells[x][y] == '*'){
+          
+            if(board.cells[x][y] == '.'){
               print("Is empty!");
               board.cells[x][y] = 'x';
               isValid = false;
@@ -92,7 +92,7 @@ class ConsoleUI extends Board implements Messege, PromptServer, PromptStrategy, 
             }else{
               print("Is not empty!, try another move");
             }
-          }
+          
         }else{
           print("Invalid index");
         }

@@ -9,6 +9,6 @@ class Board {
   Board()
       : this.rows = 15,
         this.columns = 15 {
-    cells = List.generate(rows, (r) => List.filled(columns, '*'));
+    cells = List.generate(rows, (r) => List.filled(columns, '.'));
   }
 }
