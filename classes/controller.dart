@@ -13,8 +13,8 @@ class Controller extends WebClient{
   
     _webClient.fetchData().then((response) {
       _webClient.parseInfo(response).then((parsedData) {
-        _view.promptStrategy(parsedData);
-        _view.promptMove();
+        _view.promptStrategy(parsedData).then((pid){
+        _view.promptMove(pid);});
         
       });
     }).catchError((error) {

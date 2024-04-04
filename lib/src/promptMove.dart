@@ -1,3 +1,3 @@
 abstract class PromptMove {
-  void promptMove();
+  Future<dynamic> promptMove(var pid);
 }
