@@ -87,6 +87,9 @@ class ConsoleUI extends Board
               var response = await http.get(uri);
               var info = json.decode(response.body);
               var bot_move = info['move'];
+              if (bot_move == null) {
+                return response;
+              }
               var bot_x = bot_move['x'];
               var bot_y = bot_move['y'];
               board.cells[bot_x][bot_y] = '@';
@@ -104,6 +107,16 @@ class ConsoleUI extends Board
         print('An error occurred: Invalid move!!');
       }
     }
+  }
+
+  void promptWin(var board, var win_list) {
+    printBoard(board);
+    print("You Win!");
+  }
+
+  void promptLoss(var board, var win_list) {
+    printBoard(board);
+    print("You Lose!");
   }
 
   void printBoard(Board board) {
