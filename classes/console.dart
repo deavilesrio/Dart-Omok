@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:my_package/my_package.dart';
 import 'dart:io';
 import 'Board.dart';
@@ -110,13 +112,18 @@ class ConsoleUI extends Board
   }
 
   void promptWin(var board, var win_list) {
-    printBoard(board);
+    printWinningRow(board, win_list);
     print("You Win!");
   }
 
   void promptLoss(var board, var win_list) {
-    printBoard(board);
+    printWinningRow(board, win_list);
     print("You Lose!");
+  }
+
+  void promptTie(var board) {
+    printBoard(board);
+    print("It is a tie!");
   }
 
   void printBoard(Board board) {
@@ -125,6 +132,40 @@ class ConsoleUI extends Board
       stdout.write("[");
       for (int j = 0; j < board.columns; j++) {
         stdout.write("${board.cells[i][j]} ");
+      }
+      stdout.write("]\n");
+    }
+  }
+
+  void printWinningRow(Board board, List<dynamic> winningCoordinates) {
+    final int totalCells = board.rows * board.columns;
+
+    for (int i = 0; i < board.rows; i++) {
+      stdout.write("[");
+      for (int j = 0; j < board.columns; j++) {
+        final int cellIndex = i * board.columns + j;
+        // Check if cellIndex is within valid range
+        if (cellIndex >= 0 && cellIndex < totalCells) {
+          bool isHighlighted = false;
+          // Check if cell belongs to the winning row
+          for (int k = 0; k < winningCoordinates.length - 1; k += 2) {
+            int winX = winningCoordinates[k];
+            int winY = winningCoordinates[k + 1];
+            if (winX == i && winY == j) {
+              isHighlighted = true;
+              break; // Exit inner loop if cell found in winningCoordinates
+            }
+          }
+
+          String cellValue = board.cells[i][j];
+          stdout.write(isHighlighted
+              ? "\x1b[41m$cellValue\x1b[0m" // Highlight with red background
+              : "$cellValue");
+        } else {
+          // Handle out-of-bounds cell (optional: print something different)
+          stdout.write(" "); // Replace with a visual indicator if needed
+        }
+        stdout.write(" ");
       }
       stdout.write("]\n");
     }

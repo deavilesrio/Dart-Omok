@@ -32,8 +32,15 @@ class Controller extends WebClient {
             _view.promptWin(board, playerMove["row"]);
             break; // Exit loop on win
           } else if (botMove["isWin"] == true) {
-            _view.promptLoss(board, playerMove["row"]);
-            break; // Exit loop on win
+            _view.promptLoss(board, botMove["row"]);
+            break; // Exit loop on loss
+          }
+          if (playerMove["isDraw"] == true) {
+            _view.promptTie(board);
+            break; // Exit loop on draw
+          } else if (botMove["isDraw"] == true) {
+            _view.promptTie(board);
+            break; // Exit loop on draw
           }
         } catch (error) {
           _view.displayError(error); // Handle errors within the loop
