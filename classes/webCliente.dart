@@ -7,29 +7,26 @@ class WebClient extends Response {
   var response;
 
   WebClient() {}
-  Future<dynamic> fetchData() async {
+  Future<dynamic> fetchData(var url) async{
     // var defaultUrl = "http://omok.atwebpages.com/";
     ConsoleUI console = ConsoleUI();
-    var url = stdin.readLineSync();
-    var fullUrl;
-    if (url == "") {
-      url = "info";
-
-      if (url != null) {
-        fullUrl = ConsoleUI.defaultUrl + url;
+    
+      var fullUrl;
+   
+      var info = "info";
+      
+      if (url == "") {
+        fullUrl = ConsoleUI.defaultUrl + info;
+        print("Full URL: $fullUrl");
+      }else{
+        fullUrl = url + info;
         print("Full URL: $fullUrl");
       }
-    } else {
-      if (url != null) {
-        fullUrl = url;
-        print("Full URL: $fullUrl");
-      }
-    }
-
+    
     var response;
     if (fullUrl is String) {
-      var uri = Uri.parse(fullUrl);
-      response = await http.get(uri);
+    var uri = Uri.parse(fullUrl);
+    response = await http.get(uri);
     }
     return response;
   }

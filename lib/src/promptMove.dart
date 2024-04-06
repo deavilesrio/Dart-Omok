@@ -1,3 +1,3 @@
 abstract class PromptMove {
-  Future<dynamic> promptMove(var pid, var board);
+  Future<dynamic> promptMove(var url, var pid, var board);
 }

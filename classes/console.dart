@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:my_package/my_package.dart';
 import 'dart:io';
 import 'Board.dart';
@@ -16,14 +14,16 @@ class ConsoleUI extends Board
     print("Welcome to Omokgame!");
   }
 
-  @override
-  void promptServer() {
+ @override
+  String? promptServer() {
     // var defaultUrl = "https://cssrvlab01.utep.edu/Classes/cs3360Cheon/Section1/deavilesrio/";
     stdout.write('Enter the server URL [default: $defaultUrl] ');
+    var url = stdin.readLineSync();
+    return url;
   }
 
-  @override
-  Future promptStrategy(var x) async {
+@override
+  Future promptStrategy(var x, var url) async {
     var strategies = x['strategies'];
     stdout.write("Select the server strategy: 1. " +
         strategies[0] +
@@ -33,10 +33,16 @@ class ConsoleUI extends Board
     var line = stdin.readLineSync();
     try {
       var selection = int.parse(line!);
+      var uri;
       if (selection == 1) {
         print("Creating New Game.......\n");
         var newGameSmart = "new/index.php?strategy=Smart";
-        var uri = Uri.parse(defaultUrl + newGameSmart);
+        if(url == ""){
+          uri = Uri.parse(defaultUrl + newGameSmart);
+        }else{
+          uri = Uri.parse(url! + newGameSmart);
+          //print("URL: $uri");
+        }
         var response = await http.get(uri);
         var info = json.decode(response.body);
         var pid = info['pid'];
@@ -45,10 +51,16 @@ class ConsoleUI extends Board
       } else if (selection == 2) {
         print("Creating New Game.......\n");
         var newGameRandom = "new/index.php?strategy=Random";
-        var uri = Uri.parse(defaultUrl + newGameRandom);
+        if(url == ""){
+          uri = Uri.parse(defaultUrl + newGameRandom);
+        }else{
+          uri = Uri.parse(url! + newGameRandom);
+          //print("URL: $uri");
+        }
         var response = await http.get(uri);
         var info = json.decode(response.body);
         var pid = info['pid'];
+        print(pid);
         return pid;
       } else {
         print("Invalid response: $selection");
@@ -62,8 +74,8 @@ class ConsoleUI extends Board
     print('Error: $error');
   }
 
-  @override
-  Future<dynamic> promptMove(var pid, var board) async {
+    @override
+  Future<dynamic> promptMove(var url, var pid, var board) async {
     bool isValid = true;
     while (isValid) {
       try {
@@ -82,10 +94,19 @@ class ConsoleUI extends Board
               print("Is empty!");
               board.cells[x][y] = 'x';
               isValid = false;
-              fullUrl = "${defaultUrl}play/?pid=$pid&x=$x&y=$y";
-              print("Full URL: $fullUrl");
+              if(url == ""){
+                fullUrl = "${defaultUrl}play/?pid=$pid&x=$x&y=$y";
+              }else{
+                fullUrl = "${url}play/?pid=$pid&x=$x&y=$y";
+              }
+              //print("Full URL: $fullUrl");
               // printBoard(board);
-              var uri = Uri.parse("${defaultUrl}play/?pid=$pid&x=$x&y=$y");
+              var uri; 
+              if(url == ""){
+               uri = Uri.parse("${defaultUrl}play/?pid=$pid&x=$x&y=$y");
+              }else{
+                uri = Uri.parse("${url}play/?pid=$pid&x=$x&y=$y");
+              }
               var response = await http.get(uri);
               var info = json.decode(response.body);
               var bot_move = info['move'];
@@ -128,20 +149,33 @@ class ConsoleUI extends Board
 
   void printBoard(Board board) {
     print("");
+    print(" x 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4");
+    print("y --------------------------------");
+    int k = 0;
     for (int i = 0; i < board.rows; i++) {
-      stdout.write("[");
+      if(k == 10){
+        k = 0;
+      }
+      stdout.write("$k |");
+      k++;
       for (int j = 0; j < board.columns; j++) {
         stdout.write("${board.cells[i][j]} ");
       }
-      stdout.write("]\n");
+      stdout.write("|\n");
     }
   }
 
   void printWinningRow(Board board, List<dynamic> winningCoordinates) {
     final int totalCells = board.rows * board.columns;
-
+    print(" x 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4");
+    print("y ------------------------------");
+    int k = 0;
     for (int i = 0; i < board.rows; i++) {
-      stdout.write("[");
+      if(k == 10){
+        k = 0;
+      }
+      stdout.write("$k |");
+      k++;
       for (int j = 0; j < board.columns; j++) {
         final int cellIndex = i * board.columns + j;
         // Check if cellIndex is within valid range
@@ -167,7 +201,7 @@ class ConsoleUI extends Board
         }
         stdout.write(" ");
       }
-      stdout.write("]\n");
+      stdout.write("|\n");
     }
   }
 }

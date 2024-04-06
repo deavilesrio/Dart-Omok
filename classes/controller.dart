@@ -12,18 +12,18 @@ class Controller extends WebClient {
 
   void run() async {
     _view.showMessege();
-    _view.promptServer();
+    final url = await _view.promptServer();
     Board board = Board();
 
     try {
-      final response = await _webClient.fetchData();
+      final response = await _webClient.fetchData(url);
       final parsedData = await _webClient.parseInfo(response);
-      final pid = await _view.promptStrategy(parsedData);
+      final pid = await _view.promptStrategy(parsedData, url);
 
       while (true) {
         // Loop until win or potential errors
         try {
-          final moveData = await _view.promptMove(pid, board);
+          final moveData = await _view.promptMove(url, pid, board);
           print(moveData.body);
           final parsedMoveData = await _webClient.parseInfo(moveData);
           final playerMove = parsedMoveData['ack_move'];

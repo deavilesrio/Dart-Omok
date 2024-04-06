@@ -1,3 +1,3 @@
 abstract class PromptStrategy {
-  Future promptStrategy(var info);
+  Future promptStrategy(var info, var url);
 }
