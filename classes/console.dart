@@ -17,8 +17,11 @@ class ConsoleUI extends Board
  @override
   String? promptServer() {
     // var defaultUrl = "https://cssrvlab01.utep.edu/Classes/cs3360Cheon/Section1/deavilesrio/";
+    
     stdout.write('Enter the server URL [default: $defaultUrl] ');
-    var url = stdin.readLineSync();
+    var url = stdin.readLineSync();  
+    // Attempt to parse the URI using Uri.parse()
+      
     return url;
   }
 
@@ -30,11 +33,14 @@ class ConsoleUI extends Board
         " 2. " +
         strategies[1] +
         "[default: 1] ");
-    var line = stdin.readLineSync();
+        var isValid = true;
+    while(isValid){
     try {
+      var line = stdin.readLineSync();      
       var selection = int.parse(line!);
       var uri;
       if (selection == 1) {
+        isValid = false;
         print("Creating New Game.......\n");
         var newGameSmart = "new/index.php?strategy=Smart";
         if(url == ""){
@@ -49,6 +55,7 @@ class ConsoleUI extends Board
         return pid;
         //Parse the response to obtain the pid
       } else if (selection == 2) {
+        isValid = false;
         print("Creating New Game.......\n");
         var newGameRandom = "new/index.php?strategy=Random";
         if(url == ""){
@@ -60,13 +67,16 @@ class ConsoleUI extends Board
         var response = await http.get(uri);
         var info = json.decode(response.body);
         var pid = info['pid'];
-        print(pid);
+        // print(pid);
         return pid;
       } else {
         print("Invalid response: $selection");
+        print("Choose 1 or 2");
       }
     } on FormatException {
       print("Invalid response:");
+      print("Choose 1 or 2");
+    }
     }
   }
 
@@ -204,4 +214,5 @@ class ConsoleUI extends Board
       stdout.write("|\n");
     }
   }
+  
 }

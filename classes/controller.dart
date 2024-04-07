@@ -24,7 +24,7 @@ class Controller extends WebClient {
         // Loop until win or potential errors
         try {
           final moveData = await _view.promptMove(url, pid, board);
-          print(moveData.body);
+          //print(moveData.body);
           final parsedMoveData = await _webClient.parseInfo(moveData);
           final playerMove = parsedMoveData['ack_move'];
           final botMove = parsedMoveData['move'];
